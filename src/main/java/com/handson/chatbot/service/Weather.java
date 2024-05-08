@@ -21,7 +21,7 @@ public class  Weather {
         Matcher matcher = PRODUCT_PATTERN.matcher(html);
         while (matcher.find()) {
             res += matcher.group(1) + " in " + matcher.group(2) + " at time:" + matcher.group(3) +
-                    " weather: " + matcher.group(4) + " " + matcher.group(5) + "°C\n";
+                    " weather: " + matcher.group(4) + " " + matcher.group(5) + "°C\n\n";
         }
 
         return res;

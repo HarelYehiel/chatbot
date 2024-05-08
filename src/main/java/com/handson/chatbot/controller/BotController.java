@@ -30,6 +30,27 @@ public class BotController {
     @Autowired
     Weather weather;
 
+
+    @RequestMapping(value = "", method = { RequestMethod.POST})
+    public ResponseEntity<?> getBotResponse(@RequestBody BotQuery query) throws IOException {
+        System.out.println("----------- I an in getBotResponse ------------------");
+        HashMap<String, String> params = query.getQueryResult().getParameters();
+        System.out.println("----------- params = " + params + " ------------------");
+
+        String res = "Not found";
+        if (params.containsKey("id")) {
+            res = jokesService.getValueById(params.get("id"));
+        } else if (params.containsKey("product")) {
+            res = amazonService.searchProducts(params.get("product"));
+        } else if (params.containsKey("movie")) {
+            res = imdbMovies.searchMovie(params.get("movie"));
+        }else if (params.containsKey("weather")) {
+            res = weather.searchProducts(params.get("weather"));
+        }
+
+        return new ResponseEntity<>(BotResponse.of(res), HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/amazon", method = RequestMethod.GET)
     public ResponseEntity<?> getProduct(@RequestParam String keyword) throws IOException {
         return new ResponseEntity<>(amazonService.searchProducts(keyword), HttpStatus.OK);
@@ -50,22 +71,6 @@ public class BotController {
         return new ResponseEntity<>(jokesService.getValueById(keyword), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "", method = { RequestMethod.POST})
-    public ResponseEntity<?> getBotResponse(@RequestBody BotQuery query) throws IOException {
-        HashMap<String, String> params = query.getQueryResult().getParameters();
-        String res = "Not found";
-        if (params.containsKey("id")) {
-            res = jokesService.getValueById(params.get("id"));
-        } else if (params.containsKey("product")) {
-            res = amazonService.searchProducts(params.get("product"));
-        } else if (params.containsKey("movie")) {
-            res = imdbMovies.searchMovie(params.get("movie"));
-        }else if (params.containsKey("weather")) {
-            res = weather.searchProducts(params.get("weather"));
-        }
-
-        return new ResponseEntity<>(BotResponse.of(res), HttpStatus.OK);
-    }
 
     static class BotQuery {
         QueryResult queryResult;

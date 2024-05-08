@@ -42,7 +42,7 @@ public class ImdbMovies {
         String res = "";
         Matcher matcher = MOVIE_PATTERN.matcher(html);
         while (matcher.find()) {
-            res += "Name:" + matcher.group(1) + " ,Year: " + matcher.group(2) + ", Actors: " + matcher.group(3) + "\n";
+            res += "Name:" + matcher.group(1) + " ,Year: " + matcher.group(2) + ", Actors: " + matcher.group(3) + "\n\n";
         }
         return res;
     }
