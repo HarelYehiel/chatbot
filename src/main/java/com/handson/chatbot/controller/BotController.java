@@ -1,7 +1,9 @@
 package com.handson.chatbot.controller;
 
 import com.handson.chatbot.service.AmazonService;
+import com.handson.chatbot.service.ImdbMovies;
 import com.handson.chatbot.service.JokesService;
+import com.handson.chatbot.service.Weather;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +24,25 @@ public class BotController {
     @Autowired
     JokesService jokesService;
 
+    @Autowired
+    ImdbMovies imdbMovies;
+
+    @Autowired
+    Weather weather;
+
     @RequestMapping(value = "/amazon", method = RequestMethod.GET)
     public ResponseEntity<?> getProduct(@RequestParam String keyword) throws IOException {
         return new ResponseEntity<>(amazonService.searchProducts(keyword), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/imdbMovies", method = RequestMethod.GET)
+    public ResponseEntity<?> getMovie(@RequestParam String keyword) throws IOException {
+        return new ResponseEntity<>(imdbMovies.searchMovie(keyword), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/weather", method = RequestMethod.GET)
+    public ResponseEntity<?> getWeather(@RequestParam String keyword) throws IOException {
+        return new ResponseEntity<>(weather.searchProducts(keyword), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/Jokes/{Id}", method = RequestMethod.GET)
@@ -40,7 +58,12 @@ public class BotController {
             res = jokesService.getValueById(params.get("id"));
         } else if (params.containsKey("product")) {
             res = amazonService.searchProducts(params.get("product"));
+        } else if (params.containsKey("movie")) {
+            res = imdbMovies.searchMovie(params.get("movie"));
+        }else if (params.containsKey("weather")) {
+            res = weather.searchProducts(params.get("weather"));
         }
+
         return new ResponseEntity<>(BotResponse.of(res), HttpStatus.OK);
     }
 
