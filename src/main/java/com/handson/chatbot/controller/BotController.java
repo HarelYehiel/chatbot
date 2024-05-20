@@ -2,7 +2,6 @@ package com.handson.chatbot.controller;
 
 import com.handson.chatbot.service.AmazonService;
 import com.handson.chatbot.service.ImdbMovies;
-import com.handson.chatbot.service.JokesService;
 import com.handson.chatbot.service.Weather;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,9 +21,6 @@ public class BotController {
     AmazonService amazonService;
 
     @Autowired
-    JokesService jokesService;
-
-    @Autowired
     ImdbMovies imdbMovies;
 
     @Autowired
@@ -38,9 +34,7 @@ public class BotController {
         System.out.println("----------- params = " + params + " ------------------");
 
         String res = "Not found";
-        if (params.containsKey("id")) {
-            res = jokesService.getValueById(params.get("id"));
-        } else if (params.containsKey("product")) {
+        if (params.containsKey("product")) {
             res = amazonService.searchProducts(params.get("product"));
         } else if (params.containsKey("movie")) {
             res = imdbMovies.searchMovie(params.get("movie"));
@@ -65,12 +59,6 @@ public class BotController {
     public ResponseEntity<?> getWeather(@RequestParam String keyword) throws IOException {
         return new ResponseEntity<>(weather.searchProducts(keyword), HttpStatus.OK);
     }
-
-    @RequestMapping(value = "/Jokes/{Id}", method = RequestMethod.GET)
-    public ResponseEntity<?> getValueById(@RequestParam String keyword) throws IOException {
-        return new ResponseEntity<>(jokesService.getValueById(keyword), HttpStatus.OK);
-    }
-
 
     static class BotQuery {
         QueryResult queryResult;

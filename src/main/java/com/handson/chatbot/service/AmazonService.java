@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 @Service
 public class AmazonService {
-    public static final Pattern PRODUCT_PATTERN = Pattern.compile("<span class=\"a-size-medium a-color-base a-text-normal\">([^<]+)</span>.*<span class=\"a-icon-alt\">([^<]+)</span>.*<span class=\"a-offscreen\">([^<]+)</span>");
+    public static final Pattern PRODUCT_PATTERN = Pattern.compile("<span class=\"a-size-.*? a-color-base a-text-normal\">([^<]+)</span.*?<span class=\"a-icon-alt\">([^<]+)</span>.*?<span class=\"(?:a-offscreen|a-color-base)\">([^<]+)</span>");
 
     public String searchProducts(String keyword) throws IOException {
         return parseProductHtml(getProductHtml(keyword));
@@ -21,9 +21,8 @@ public class AmazonService {
         String res = "";
         Matcher matcher = PRODUCT_PATTERN.matcher(html);
         while (matcher.find()) {
-            res += matcher.group(1) + " - " + matcher.group(2) + ", price:" + matcher.group(3) + "\n\n";
+            res += "Product's name: " + matcher.group(1) + "\nrating: " + matcher.group(2) + "\nprice: " + matcher.group(3) + "\n\n";
         }
-
         return res;
     }
 
@@ -68,6 +67,7 @@ public class AmazonService {
             Response response = client.newCall(request).execute();
             String str = response.body().string();
             if(!str.contains(keyword)) continue;
+
             return str;
         }
     }
